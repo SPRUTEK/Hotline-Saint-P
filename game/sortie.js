@@ -107,7 +107,8 @@ SO.addStand=addStand;
 // ================= ПРОЛОГ =================
 // so.pro: 0 — ещё не начато; 1 — идти в мини-маркет; 2 — маркет пройден, к Ханже;
 // 3 — задний двор; 4 — материалы принесены, ставим баррикады; 5 — домой, ждать звонка Аниса.
-function inPro(){return !C1.called&&S.step===10}
+const misOn=()=>!!(window.MIS&&MIS.on); // 06.11 Natalia: в режиме «Миссии» вылазок нет, глава начинается сразу
+function inPro(){return !misOn()&&!C1.called&&S.step===10}
 // Шмакодявка в квартире
 const shIt=IT[0],shA=shIt.act;
 shIt.act=function(){const s=so();
@@ -139,22 +140,22 @@ function toHub(){CS.chOn=snapOn();CS.hubCh=curCh();lockMove=true;X.go(()=>{lockM
 function enterHub(){CS.hub=1;C1.noFortHi=true;C1.go('fort');C1.noFortHi=false;restoreOn();music('flat')}
 SO.toHub=toHub;
 // еда и вода на миссию (Е1/Е2)
-function eat(){const s=sv();if(s.food>0&&s.water>0){s.food--;s.water--;note('Паёк на миссию: −1 еда, −1 вода (осталось '+s.food+' / '+s.water+')')}
+function eat(){if(misOn())return;const s=sv();if(s.food>0&&s.water>0){s.food--;s.water--;note('Паёк на миссию: −1 еда, −1 вода (осталось '+s.food+' / '+s.water+')')}
   else{CS.hungryM=1;note('Нет еды и воды! Выходишь голодным: половина здоровья')}s.so.optN=0;save()}
 SO.eat=eat;
-function missing(ch){const o=so();return (REQ[ch]||[]).filter(id=>!o.done[id])}
+function missing(ch){if(misOn())return [];const o=so();return (REQ[ch]||[]).filter(id=>!o.done[id])}
 const LN=id=>(LOCS.find(l=>l.id===id)||{}).n||id;
 setTimeout(()=>{ // двери миссий в квартире
   for(const it of IT){let lb='';try{lb=it.label()}catch(e){}if(!/^Выйти: /.test(lb)||/титры/.test(lb)||it._so)continue;it._so=1;const a0=it.act;
     it.act=function(){const ch=curCh(),m=missing(ch);if(m.length){const who=ch===2||ch===5?'s':'m';
         say([[who,'Перед миссией надо сходить на вылазку: '+m.map(LN).join(', ')+'.'],[who,'Карта вылазок — на стенде во дворе. Иду во двор.']],()=>toHub());return}
       eat();a0.call(this)}}
-  IT.push({x:190,y:198,r:12,label:()=>'Во двор: карта вылазок',cond:()=>scene==='flat'&&state==='play'&&!C1.on&&!(UP.ui)&&curCh()>=2&&IT.some(q=>q._so&&(!q.cond||q.cond())),act:()=>toHub()});
+  IT.push({x:190,y:198,r:12,label:()=>'Во двор: карта вылазок',cond:()=>!misOn()&&scene==='flat'&&state==='play'&&!C1.on&&!(UP.ui)&&curCh()>=2&&IT.some(q=>q._so&&(!q.cond||q.cond())),act:()=>toHub()});
 },0);
 
 C1.fortHook=function(L,FORT,N){const s=so();
   const hzIt=L.its.find(i=>{try{return /Ханжой/.test(i.label())}catch(e){return false}});
-  addStand(L,170,128);
+  if(!misOn())addStand(L,170,128);
   if(CS.hub){hubYard(L,FORT,N,hzIt);return}
   if(!inPro()){ // обычный двор после звонка Аниса: двор уже укреплён в прологе
     if(s.pro>=5||C1.called){FORT.spots.forEach(q=>q.done=true);FORT.talked=true}
