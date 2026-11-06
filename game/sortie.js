@@ -211,6 +211,7 @@ function WD_own(k){const s=sv();return !!((s.own&&s.own[k])||(PS.own&&PS.own[k])
 
 // ================= ЗАПУСК ВЫЛАЗКИ =================
 function start(l){const s=sv();CS.chOn=CS.chOn||snapOn();if(!CS.hub&&!inPro())CS.chOn=snapOn();CS.rep=!!s.so.done[l.id];
+  if(l.id==='mm'&&!CS.rep&&!s.mmKit){s.mmKit=1;save();s.syr=Math.max(3,s.syr|0);s.am=s.am||{};s.am.ammo=(s.am.ammo|0)+8;PS.syr=Math.max(3,PS.syr|0);PS.ammo=(PS.ammo|0)+8;save();note('Шмакодявка: «Держи 3 шприца и обойму. Мало ли что»')} // 06.11 Natalia: перед первой вылазкой в мини-маркет — 3 шприца и обойма (8 патр.), один раз
   if(l.car){s.fuelC=(s.fuelC|0)-(l.fuel|0);save();if(l.fuel)note('−'+l.fuel+' канистр'+(l.fuel===1?'а':'ы')+' бензина');drive(l)}else run(l.id)}
 SO.start=start;
 function run(id){CS.id=id;K.sec(CS,id,()=>BUILD[id](),run);restoreOn();if(window.SOMZ&&SOMZ[id]&&MUS[SOMZ[id]])music(SOMZ[id]);else X.mz('combat');
@@ -383,7 +384,7 @@ BUILD.by=function(){
   X.buildNav();
   pl.x=260;pl.y=24;pl.a=Math.PI/2;pl.ma=pl.a;
   common(L);
-  for(const [x,y] of [[200,90],[320,140],[120,150],[110,270],[200,330],[300,250],[420,220],[470,300],[430,390],[260,380],[150,400]])E.addZ('normal',x,y);
+  for(const [x,y] of [[200,90],[120,150],[200,330],[420,220],[430,390],[260,380]])E.addZ('normal',x,y); // 06.11 Natalia: −5 зомби на заднем дворе
   E.addZ('fast',360,360);E.addZ('thrower',480,200);E.addZ('crawler',100,210,{hid:'floor',wakeR:24});E.addZ('bloat',250,300);
   bossOr(110,390,'ГАРАЖНИК ПАЛЫЧ',340);
   // стройматериалы: 0 доски, 1 мешки, 2 сетка

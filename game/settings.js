@@ -11,7 +11,7 @@ const rd=(k,d)=>{try{const v=JSON.parse(LSg(k)||'null');return v&&typeof v==='ob
 // ======================= ЗНАЧЕНИЯ =======================
 const VDEF={all:1,mus:1,sfx:1,vox:1};
 const VOL=Object.assign({},VDEF,rd('pp_vol',{}));for(const k in VDEF)VOL[k]=Math.max(0,Math.min(1,+VOL[k]||0));
-const SDEF={shake:1,flash:1,txt:1,tspd:1,skip:0,aim:1,pts:1,arrows:1,radar:1,stk:1,lefty:0,duck:1,bg:1};
+const SDEF={hshad:0,shake:1,flash:1,txt:1,tspd:1,skip:0,aim:1,pts:1,arrows:1,radar:1,stk:1,lefty:0,duck:1,bg:1};
 const SET=Object.assign({},SDEF,rd('pp_set',{}));
 const KEYS=rd('pp_keys',{}); // действие → своя клавиша (code)
 function saveVol(){LSs('pp_vol',JSON.stringify(VOL))}
@@ -53,6 +53,10 @@ let inDlg=false;
 try{const uf=uiFont;uiFont=function(sz,b){return uf(inDlg&&sz>=5.5?sz*SET.txt:sz,b)}}catch(e){}
 function wrapDlg(){try{if(typeof renderDlg!=='function'||renderDlg.__set)return;const r0=renderDlg;renderDlg=function(){inDlg=true;try{return r0.apply(this,arguments)}finally{inDlg=false}};renderDlg.__set=1}catch(e){}}
 wrapDlg();setInterval(wrapDlg,1000);
+// тени-кружки под героями и людьми (06.11 Natalia: «странно выглядит») — по умолчанию выкл; под зомби и машинами (r≥10) остаются
+try{if(typeof shadowBlob==='function'){const sb0=shadowBlob;
+  shadowBlob=function(x,y,r){if(SET.hshad||r>=10)return sb0(x,y,r);
+    try{const L=C1.engine&&C1.engine.L;if(L&&L.zs)for(const z of L.zs)if(z.x===x&&z.y===y&&!z.ally)return sb0(x,y,r)}catch(e){}}}}catch(e){}
 function isFull(){return !!(document.fullscreenElement||document.webkitFullscreenElement)}
 function toggleFull(){try{if(isFull())(document.exitFullscreen||document.webkitExitFullscreen).call(document);else{const el=document.documentElement;(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}}catch(e){}}
 
@@ -106,7 +110,7 @@ const SL=[['all','Общая громкость','#ffffff'],['mus','Музыка
 const CH={ // [ключ, подпись, варианты [значение, надпись], пояснение]
   snd:[['duck','Тише музыка во время диалогов',[[1,'Да'],[0,'Нет']]],['bg','Звук, когда игра свёрнута',[[1,'Играет'],[0,'Тишина']]]],
   scr:[['full','Полный экран',[[1,'Вкл'],[0,'Выкл']],'F11 или Alt+Enter в ПК-версии'],['shake','Тряска экрана',[[1,'Полная'],[.4,'Слабая'],[0,'Выкл']]],
-    ['flash','Вспышки (урон, взрывы в роликах)',[[1,'Обычные'],[.35,'Мягкие']]],['txt','Размер текста в диалогах',[[1,'100%'],[1.15,'115%'],[1.3,'130%']]]],
+    ['flash','Вспышки (урон, взрывы в роликах)',[[1,'Обычные'],[.35,'Мягкие']]],['txt','Размер текста в диалогах',[[1,'100%'],[1.15,'115%'],[1.3,'130%']]],['hshad','Тени под героями',[[0,'Выкл'],[1,'Вкл']],'Под зомби и машинами тени остаются']],
   game:[['tspd','Скорость текста',[[.6,'Медленно'],[1,'Обычно'],[2,'Быстро'],[99,'Сразу']]],['skip','Пропускать прочитанные диалоги',[[0,'Нет'],[1,'Да']],'Удобно, когда участок переигрывается после смерти'],
     ['aim','Автоприцел (телефон)',[[0,'Выкл'],[1,'Слабый'],[2,'Сильный']]],['pts','Очки над зомби',[[1,'Показывать'],[0,'Скрыть']]],
     ['arrows','Стрелки к последним зомби',[[1,'Показывать'],[0,'Скрыть']]],['radar','Радар-миникарта',[[1,'Показывать'],[0,'Скрыть']]]],
