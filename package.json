@@ -1,0 +1,67 @@
+{
+  "name": "hotline-saint-p",
+  "version": "1.0.1",
+  "description": "Hotline Saint-P",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis --x64"
+  },
+  "author": "Natalia",
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
+  },
+  "productName": "Hotline Saint-P",
+  "build": {
+    "appId": "com.natalia.hotlinesaintp",
+    "productName": "Hotline Saint-P",
+    "copyright": "© Natalia",
+    "files": [
+      "main.js",
+      "build/icon.png",
+      "game/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "compression": "normal",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.png",
+      "artifactName": "HotlineSaintP-Setup-${version}.${ext}",
+      "executableName": "HotlineSaintP"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Hotline Saint-P",
+      "language": "1049",
+      "installerLanguages": [
+        "ru_RU"
+      ],
+      "deleteAppDataOnUninstall": false,
+      "differentialPackage": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "SPRUTEK",
+        "repo": "hotline-saint-p",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "repository": "https://github.com/SPRUTEK/hotline-saint-p"
+}
