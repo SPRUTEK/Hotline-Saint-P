@@ -98,7 +98,7 @@ const ST={ph:'slides',t:0,sel:0,slide:0,st:0,hover:-1,first:true,legacy:false,ms
 try{const f=sessionStorage.getItem('pp_newarm');if(f&&Date.now()-(+f)<120000&&!(window.SAVEP&&SAVEP.get())){ST.ph='main';ST.sel=0}sessionStorage.removeItem('pp_newarm')}catch(e){}
 const hasSave=()=>!!(window.SAVEP&&SAVEP.get());
 function items(){const L=[];if(hasSave())L.push({k:'cont',t:'ПРОДОЛЖИТЬ',sub:''});
-  if(window.SAVEP&&SAVEP.slots&&SAVEP.slots().length)L.push({k:'slots',t:'СОХРАНЕНИЯ'});L.push({k:'new',t:'НОВАЯ ИГРА'},{k:'mis',t:'МИССИИ'},{k:'col',t:'КОЛЛЕКЦИИ'},{k:'set',t:'НАСТРОЙКИ',lock:1},{k:'code',t:'КОД СОХРАНЕНИЯ',small:1},{k:'exit',t:'ВЫХОД'});return L}
+  if(window.SAVEP&&SAVEP.slots&&SAVEP.slots().length)L.push({k:'slots',t:'СОХРАНЕНИЯ'});L.push({k:'new',t:'НОВАЯ ИГРА'},{k:'mis',t:'МИССИИ'},{k:'col',t:'КОЛЛЕКЦИИ'},{k:'set',t:'НАСТРОЙКИ',lock:window.VOLUI?0:1},{k:'code',t:'КОД СОХРАНЕНИЯ',small:1},{k:'exit',t:'ВЫХОД'});return L}
 // раскладка кнопок (логические единицы 320×180)
 const BX=10,BY0=62,BW=86,BH=11,BG=3.4;
 function btnRect(i,L){let y=BY0;for(let j=0;j<i;j++)y+=(L[j].small?8:BH)+BG;return{x:BX,y,w:BW,h:L[i].small?8:BH}}
@@ -162,7 +162,7 @@ function act(it){if(!it)return;sfx('click');
   if(it.k==='new'){startNew();return}
   if(it.k==='mis'){if(window.MIS&&MIS.open)MIS.open();else{ST.msg='Миссии скоро';ST.msgT=2}return}
   if(it.k==='col'){if(window.COLL){COLL.open('film');return}C1.gal={pg:0};ST.legacy=true;return}
-  if(it.k==='set'){ST.msg='Настройки появятся позже';ST.msgT=2;return}
+  if(it.k==='set'){if(window.VOLUI){VOLUI.open();return}ST.msg='Настройки появятся позже';ST.msgT=2;return}
   if(it.k==='slots'){SAVEP.openSlots&&SAVEP.openSlots();return}
   if(it.k==='code'){SAVEP.openBox&&SAVEP.openBox();return}
   if(it.k==='exit'){ST.ph='exit';try{for(const k in MUS)MUS[k].pause()}catch(e){}try{window.close()}catch(e){}return}}

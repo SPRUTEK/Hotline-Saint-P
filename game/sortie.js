@@ -339,9 +339,9 @@ BUILD.mm=function(){
   pl.x=180;pl.y=440;pl.a=-Math.PI/2;pl.ma=pl.a;
   common(L);
   // зомби: улица и магазин
-  for(const [x,y] of [[80,164],[300,166],[130,302],[250,304],[40,300]])E.addZ('normal',x,y);
+  for(const [x,y] of [[80,164],[250,304]])E.addZ('normal',x,y); // 06.11 Natalia: −5 зомби (−3 улица, −2 магазин)
   E.addZ('fast',220,164);
-  for(const [x,y] of [[90,56],[150,80],[190,104],[120,104],[200,56],[290,120],[80,132]])E.addZ('normal',x,y);
+  for(const [x,y] of [[90,56],[150,80],[120,104],[200,56],[290,120]])E.addZ('normal',x,y);
   E.addZ('thrower',300,100);E.addZ('crawler',140,56,{hid:'floor',wakeR:24});
   bossOr(272,54,'ГРУЗЧИК ТОЛЯН',300);
   // еда и вода
@@ -349,7 +349,7 @@ BUILD.mm=function(){
   for(const [x,y] of [[58,50],[58,74],[58,98]])lootR(L,'swat',x,y,1);
   lootIt(L,'swat',262,44,2);lootIt(L,'sfood',300,62,2);lootIt(L,'syr',250,70);
   E.addItem('ammo',300,130,10);
-  const lanes=[{y:192,d:1},{y:220,d:1},{y:248,d:-1},{y:276,d:-1}];traffic(L,lanes,{sp:175,gap:1.5,dmg:45});
+  const lanes=[{y:192,d:1},{y:220,d:1},{y:248,d:-1},{y:276,d:-1}];traffic(L,lanes,{sp:105,gap:1.9,dmg:45}); // 06.11 Natalia: машины медленнее (было sp:175, gap:1.5)
   L.onUpdate=dt=>{if(L.carTick)L.carTick(dt);
     const Q=CS.got;if(Q.food>=need(4)&&Q.water>=need(4)&&!bossAlive(L)&&pl.y>430&&!CS.fin){CS.fin=1;finish('mm')}};
   const dO=L.drawOver;L.drawOver=()=>{if(dO)dO();L.carDraw()};

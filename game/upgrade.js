@@ -788,14 +788,14 @@ for(const it of IT){let lb='';try{lb=it.label()}catch(e){}if(lb==='Посмот�
 const PB={x:W/2+46,y:2,w:14,h:10}; // кнопка паузы на экране (для телефона)
 function canPause(){return state==='play'&&!UP.ui&&!(C1.gal&&UP.galOn)}
 function pause(on){UP.paused=on;C1.mdown=false;C1.fire=null;sfx('click');for(const k in keys)keys[k]=false;if(on)store()}
-const PBT=[[0,'ПРОДОЛЖИТЬ','#3ef0b0'],[4,'СОХРАНЕНИЯ · F5','#3ef0b0'],[3,'НАСТРОЙКИ','#6a6280'],[2,'КОД СОХРАНЕНИЯ','#ffd23a'],[1,'В ГЛАВНОЕ МЕНЮ','#ff4fd8']];
+const PBT=[[0,'ПРОДОЛЖИТЬ','#3ef0b0'],[4,'СОХРАНЕНИЯ · F5','#3ef0b0'],[3,'НАСТРОЙКИ','#b89aff'],[2,'КОД СОХРАНЕНИЯ','#ffd23a'],[1,'В ГЛАВНОЕ МЕНЮ','#ff4fd8']];
 const PBY=i=>56+i*15;
 function drawPause(){
   // полупрозрачный неоновый фон: розовый с бирюзой, игра видна сквозь него
   const g=u.createLinearGradient(0,0,W,H);g.addColorStop(0,'rgba(255,79,216,.34)');g.addColorStop(.5,'rgba(20,8,40,.7)');g.addColorStop(1,'rgba(62,240,176,.3)');u.fillStyle=g;u.fillRect(0,0,W,H);
   u.fillStyle='rgba(0,0,0,.12)';for(let y=0;y<H;y+=2)u.fillRect(0,y,W,.6);
   u.save();u.textAlign='center';uiFont(18,true);u.shadowColor='#ff4fd8';u.shadowBlur=12;u.fillStyle='#ff4fd8';u.fillText('ПАУЗА',W/2,46);u.shadowColor='#3ef0b0';u.shadowBlur=6;u.fillStyle='rgba(255,255,255,.85)';u.fillText('ПАУЗА',W/2-.6,45.4);u.restore();
-  PBT.forEach(([id,t,c],i)=>{const y=PBY(i),on=(UP.psel|0)===id,lock=id===3;
+  PBT.forEach(([id,t,c],i)=>{const y=PBY(i),on=(UP.psel|0)===id,lock=id===3&&!window.VOLUI;
     u.save();if(on){u.shadowColor=c;u.shadowBlur=10}u.fillStyle=on?'rgba(255,255,255,.14)':'rgba(10,4,24,.55)';u.fillRect(W/2-62,y,124,13);u.restore();
     u.fillStyle=lock?'#4a4260':c;u.fillRect(W/2-62,y,2,13);u.fillRect(W/2+60,y,2,13);
     u.save();u.textAlign='center';uiFont(6.4,true);if(on&&!lock){u.shadowColor=c;u.shadowBlur=6}u.fillStyle=lock?'#6a6280':on?'#ffffff':c;u.fillText(t+(lock?'  🔒':''),W/2,y+9.2);u.restore()});
@@ -805,7 +805,7 @@ function drawPause(){
   if(UP.pmsgT>0){UP.pmsgT-=1/60;T('Настройки появятся позже',W/2,56,'#ffd23a',4.6,true,'center')}
 }
 function toMenu(){if(window.MIS&&MIS.on){MIS.back();return}store();try{location.hash=''}catch(e){}(window.__leaving=1,location.reload())}
-function pAct(id){if(id===0)pause(false);else if(id===3){UP.pmsgT=1.6;sfx('thump',1.6)}else if(id===2){if(window.SAVEP)SAVEP.openBox()}else if(id===4){if(window.SAVEP&&SAVEP.openSlots)SAVEP.openSlots()}else if(id===1)toMenu()}
+function pAct(id){if(id===0)pause(false);else if(id===3){if(window.VOLUI)VOLUI.open();else{UP.pmsgT=1.6;sfx('thump',1.6)}}else if(id===2){if(window.SAVEP)SAVEP.openBox()}else if(id===4){if(window.SAVEP&&SAVEP.openSlots)SAVEP.openSlots()}else if(id===1)toMenu()}
 function pauseTap(p){PBT.forEach(([id],i)=>{if(inR(p,W/2-62,PBY(i),124,13))pAct(id)})}
 function drawPauseBtn(){if(state!=='play'||UP.ui||UP.paused||C1.over||cut&&C1.mode!=='cut'&&!C1.on)return;if(!touch.on&&!(mouse.on&&mouse.y<20))return;
   u.globalAlpha=.55;u.fillStyle='rgba(8,5,16,.8)';u.fillRect(PB.x,PB.y,PB.w,PB.h);u.fillStyle='#fff';u.fillRect(PB.x+4,PB.y+2,2,6);u.fillRect(PB.x+8,PB.y+2,2,6);u.globalAlpha=1}
