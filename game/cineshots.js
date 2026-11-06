@@ -18,7 +18,8 @@ function scooterRide(x,y,t,who2){putS(C.scooter(),x,y);hero('m',x+16,y-5,t,'stan
 // головы в окнах машины
 function heads(x,y,list){for(const [dx,c,hc] of list){R(x+dx,y,8,9,c||'#e8b898');R(x+dx-1,y-2,10,4,hc||'#2a1a10')}}
 // гудок/вспышка в кадре
-function flash(a,c){if(a<=0)return;C.g.fillStyle=c||'rgba(255,255,255,'+a+')';if(c)C.g.globalAlpha=a;C.g.fillRect(0,0,AW,AH);C.g.globalAlpha=1}
+function flash(a,c){if(window.SETT)a*=SETT.get('flash');if(a<=0)return; // 06.11: настройка «вспышки»
+C.g.fillStyle=c||'rgba(255,255,255,'+a+')';if(c)C.g.globalAlpha=a;C.g.fillRect(0,0,AW,AH);C.g.globalAlpha=1}
 // пешеходы (мирные): небольшие, в масштабе
 const PEDS=[{f:1,hair:'#c8a060',style:'fem',dress:'#3affd8',legs:'#f0c8a8',shoes:'#1a1a1a'},{hair:'#2a1a10',style:'short',top:'#c84a4a',pants:'#2a2a3a'},{f:1,hair:'#1a1a1a',style:'bob',top:'#ffd23a',pants:'#3a3a5a'},{hair:'#5a3a20',style:'curly',top:'#4a8ac8',kind:'hoodie',pants:'#1a1a22'},{hair:'#8a8a8a',style:'short',top:'#5a5a6a',kind:'coat',coat:'#5a5a6a'},{f:1,hair:'#8a3a2a',style:'fem',top:'#ff6aa8',pants:'#1a1a22'}];
 function ped(i,x,y,t,pose,fl,sc){const P=Object.assign({skin:hash(i,2)<.5?'#f0c8a8':'#d8a080',shoes:'#1a1a1e'},PEDS[i%PEDS.length]);sc=sc||.8;C.g.save();C.g.translate(Math.round(x),Math.round(y));C.g.scale(sc,sc);hero(P,0,0,t+i*.3,pose||'walk',{flip:fl,noShadow:1});C.g.restore()}

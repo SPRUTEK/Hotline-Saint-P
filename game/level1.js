@@ -570,7 +570,7 @@ function takeItem(it){
   if(C1.onPick)C1.onPick(it);
   if(L.onItem)L.onItem(it);
 }
-function floatT(x,y,t,c){L.texts.push({x,y,t,c,life:1.3})}
+function floatT(x,y,t,c){if(window.SETT&&!SETT.get('pts')&&/^\+\d/.test(t))return;L.texts.push({x,y,t,c,life:1.3})} // 06.11: настройка «очки над зомби»
 function drawItem(it){
   const x=Math.round(it.x),y=Math.round(it.y+Math.sin(tm*3+it.x)*1);
   ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(x-4,y+3,8,2);
@@ -1763,9 +1763,10 @@ function fbVisible(){return touch.on&&C1.on&&state==='play'&&!cut&&!dlg&&!C1.ove
 function fbLabel(){return C1.noWpn?'УДАР':(WD[PS.wpn]&&WD[PS.wpn].ml)?'УДАР':'ОГОНЬ'}
 function placeBtns(){ // в бою ДЕЙСТВ. уезжает левее, на её месте — ОГОНЬ
   if(fbVisible()){BTN.x=W-90;BTN.y=H-17;BTN.r=11}else{BTN.x=W-30;BTN.y=H-32;BTN.r=13}}
-function aimAssist(){ // лёгкий доводчик: ближайший зомби в секторе ±30° перед героем
-  let best=null,bd=1e9;for(const z of L.zs){if(z.dead||z.st==='hidden')continue;const d=Math.hypot(z.x-pl.x,z.y-pl.y);if(d>170||d>=bd)continue;
-    const za=Math.atan2(z.y-pl.y,z.x-pl.x);if(Math.abs(angDiff(za,pl.a))>.52)continue;if(!los(pl.x,pl.y,z.x,z.y))continue;best=za;bd=d}
+function aimAssist(){ // лёгкий доводчик: ближайший зомби в секторе ±30° перед героем (06.11: настройка SETT.aim 0 выкл / 1 слабый / 2 сильный)
+  const AK=window.SETT?SETT.get('aim'):1;if(!AK)return;const AR=AK>1?220:170,AA=AK>1?.87:.52;
+  let best=null,bd=1e9;for(const z of L.zs){if(z.dead||z.st==='hidden')continue;const d=Math.hypot(z.x-pl.x,z.y-pl.y);if(d>AR||d>=bd)continue;
+    const za=Math.atan2(z.y-pl.y,z.x-pl.x);if(Math.abs(angDiff(za,pl.a))>AA)continue;if(!los(pl.x,pl.y,z.x,z.y))continue;best=za;bd=d}
   if(best!==null)pl.a=best}
 function fbDraw(){if(!fbVisible())return;const on=!!C1.fire,b=FB;
   // ДЕЙСТВ. в бою мельче: перерисовываем поверх с мелким шрифтом
@@ -1865,7 +1866,7 @@ function c1UI(){
     const b=L.zs.find(z=>z.type==='boss'&&z.st!=='hidden');
     if(b&&!dlg){uiFont(4.6,true);u.textAlign='center';u.fillStyle='#ff6a6a';u.fillText(b.nm||L.bossName||'ГРОМИЛА-СИСАДМИН',W/2,H-24);u.textAlign='left';hudBar(W/2-60,H-21,120,4,b.hp/b.max,'#c0202a')}
     // стрелки к последним зомби
-    if(L.id==='off1'||L.id==='park'||L.arrows||L.armed){const left=L.zs.filter(z=>!z.dead&&!z.ally);if(left.length&&left.length<=10&&!dlg)for(const z of left){const sx=z.x-camX,sy=z.y-camY;if(sx>0&&sx<W&&sy>0&&sy<H)continue;const a=Math.atan2(sy-H/2,sx-W/2),ex=W/2+Math.cos(a)*(W/2-14),ey=H/2+Math.sin(a)*(H/2-14);
+    if((L.id==='off1'||L.id==='park'||L.arrows||L.armed)&&!(window.SETT&&!SETT.get('arrows'))){const left=L.zs.filter(z=>!z.dead&&!z.ally);if(left.length&&left.length<=10&&!dlg)for(const z of left){const sx=z.x-camX,sy=z.y-camY;if(sx>0&&sx<W&&sy>0&&sy<H)continue;const a=Math.atan2(sy-H/2,sx-W/2),ex=W/2+Math.cos(a)*(W/2-14),ey=H/2+Math.sin(a)*(H/2-14);
       u.save();u.translate(clamp(ex,10,W-10),clamp(ey,10,H-10));u.rotate(a);u.fillStyle='rgba(255,60,60,.8)';u.beginPath();u.moveTo(5,0);u.lineTo(-3,-3);u.lineTo(-3,3);u.fill();u.restore()}}
     // подсказка
     const nr=C1.near;if(nr&&!dlg){const sx=nr.x-camX,sy=nr.y-camY-14;uiFont(5,true);const t=(touch.on?'':'E  ')+nr.label();const w=u.measureText(t).width+8;const x=clamp(sx-w/2,2,W-w-2),y=clamp(sy-7,36,H-12);

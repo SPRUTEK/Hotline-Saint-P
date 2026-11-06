@@ -71,7 +71,7 @@ update=function(dt){_up(dt);
         if(now-lastT>=gap){for(let i=n-1;i>=lastN;i--){const ch=(txt[i]||'').toLowerCase();if(!/[a-zа-яё]/.test(ch))continue;syl(L.w,ch,(txt[i+1]||'').toLowerCase(),/[!]/.test(txt.slice(i,i+10)));lastT=now;break}}lastN=n}}}
   // приглушение музыки во время реплик
   duck+=((d?1:0)-duck)*Math.min(1,dt*4);
-  if(duck>.01){const lim=MUS_VOL*(1-.5*duck);try{const a=MUS[musCur];if(a&&!a.paused&&a.volume>lim)a.volume=lim}catch(e){}
+  if(duck>.01&&!(window.SETT&&!SETT.get('duck'))){const lim=MUS_VOL*(1-.5*duck);try{const a=MUS[musCur];if(a&&!a.paused&&a.volume>lim)a.volume=lim}catch(e){}
     try{const A=C1.audio;if(A&&A.MOB&&A.MP&&A.MP.volume>lim)A.MP.volume=lim}catch(e){}}
 };
 })();

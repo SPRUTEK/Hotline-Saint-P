@@ -108,12 +108,12 @@ function openBox(){
 function closeBox(){if(box){box.remove();box=null}}
 // ---------- новая игра: сброс всех сохранений ----------
 function resetAll(){
-  let keep=null;try{keep=localStorage.getItem('snd_off')}catch(e){}
-  try{const ks=[];for(let i=0;i<localStorage.length;i++)ks.push(localStorage.key(i));for(const k of ks)if(k!=='snd_off')localStorage.removeItem(k)}catch(e){}
-  if(keep!=null)LS.set('snd_off',keep);
+  // 06.11: настройки (звук, экран, клавиши) при сбросе прогресса не трогаем
+  const KEEP=['snd_off','pp_vol','pp_set','pp_keys'];
+  try{const ks=[];for(let i=0;i<localStorage.length;i++)ks.push(localStorage.key(i));for(const k of ks)if(!KEEP.includes(k))localStorage.removeItem(k)}catch(e){}
   SAVE=null;
   // до перезагрузки старые данные из памяти не должны записаться обратно
-  try{const si=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='snd_off')return si.call(this,k,v)}}catch(e){}
+  try{const si=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(KEEP.includes(k))return si.call(this,k,v)}}catch(e){}
   // облако (если подключено) тоже обнуляем, чтобы старый прогресс не вернулся
   if(ref){busy=false;again=false;try{ref.set({code:makeCode(),t:Date.now()})}catch(e){}}
 }
